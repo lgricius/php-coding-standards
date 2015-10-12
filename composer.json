@@ -1,0 +1,17 @@
+{
+    "name": "lgricius/php-coding-standards",
+    "description": "PHP Coding standards: basics. KaunasPHP.lt v.29 - CodeWeek Edition",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.3",
+        "fabpot/php-cs-fixer": "^1.10",
+        "phpmd/phpmd": "^2.3"
+    },
+    "authors": [
+        {
+            "name": "Linas Gricius",
+            "email": "linasgricius - gmail.com"
+        }
+    ],
+    "require": {
+    }
+}

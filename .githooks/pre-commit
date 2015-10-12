@@ -1,0 +1,50 @@
+#!/bin/sh
+
+HAS_ERRORS=0
+PROJECT=`php -r "echo dirname(dirname(realpath('$0')));"`
+STAGED_FILES_CMD=`git diff --cached --name-only | grep \\.php$`
+
+SFILES=${SFILES:-$STAGED_FILES_CMD}
+
+echo "Checking PHP Lint...\n"
+for FILE in $SFILES
+do
+	php -l $PROJECT/$FILE
+	if [ $? != 0 ]
+	then
+	    HAS_ERRORS=1;
+	fi
+done
+
+echo "\n\n"
+
+echo "Running Code Sniffer...\n"
+for FILE in $SFILES
+do
+	vendor/bin/phpcs --standard=PSR2 $PROJECT/$FILE -n
+	if [ $? != 0 ]
+	then
+		HAS_ERRORS=1;
+	fi
+done
+
+echo "\n\n"
+
+echo "Running Mess detector...\n"
+for FILE in $SFILES
+do
+	vendor/bin/phpmd $PROJECT/$FILE text cleancode,codesize,design,naming,unusedcode
+    if [ $? != 0 ]
+    then
+        HAS_ERRORS=1;
+    fi
+done
+
+if [ $HAS_ERRORS -gt 0 ]
+then
+    echo "\n\n"
+    echo "Fix errors/warnings before commit!"
+    exit 1;
+fi
+
+exit $?
